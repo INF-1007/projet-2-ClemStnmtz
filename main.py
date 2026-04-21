@@ -20,10 +20,15 @@ def main():
 
     # TODO : Créer une liste de véhicules qui contient une instance pour chaque
     # type de véhicule : une moto, une auto et un camion
+    vehicules = [
+        Moto("Ma Moto", [START_LINE_X, START_MOTO_Y]),
+        Auto("Mon Auto", [START_LINE_X, START_AUTO_Y]),
+        Camion("Mon Camion", [START_LINE_X, START_CAMION_Y]) ]
 
     running = True
     course_commencee = False
     gagnant = None
+    confettis=[]
 
     while running:
 
@@ -41,10 +46,15 @@ def main():
 
         # TODO : Gérer le début de la course en appelant la méthode `accelerer` des véhicules
         # Si le véhicule franchit la ligne et qu’on n’a pas encore de gagnant, on le note
-
+        for v in vehicules:
+            if course_commencee and gagnant is None:
+                v.accelerer(dt) #
+                if v.position[0] >= FINISH_LINE_X:
+                    gagnant = v
+                    confettis = [Confetti() for _ in range(100)] #
 
         # TODO : Pour chaque véhicule, appeler la méthode `affichage_vehicule`
-        
+            v.affichage_vehicule(screen)
 
         if not course_commencee and gagnant is None:
             txt = font.render("Appuyez sur ESPACE pour démarrer",
@@ -52,7 +62,13 @@ def main():
             screen.blit(txt, (350, 35))
 
         # TODO: Si on a un gagnant, afficher le message qui indique le véhicule gagnant avec la méthode `celebrer` 
-        
+        if gagnant:
+            # Affichage célébration
+            for c in confettis:
+                c.tomber()
+                c.dessiner(screen)
+            txt = font.render(gagnant.celebrer(), True, (0, 0, 0))
+            screen.blit(txt, (350, 35))
 
         pygame.display.flip()
 
